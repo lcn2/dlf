@@ -2,9 +2,9 @@
 #
 # ylf - yum list fix: convert yum list output to useful data for programs
 #
-# @(#) $Revision$
-# @(#) $Id$
-# @(#) $Source$
+# @(#) $Revision: 1.1 $
+# @(#) $Id: ylf,v 1.1 2014/10/17 01:33:21 root Exp root $
+# @(#) $Source: /usr/local/src/sbin/ylf/RCS/ylf,v $
 #
 # Copyright (c) 2014 by Landon Curt Noll.  All Rights Reserved.
 #
@@ -54,11 +54,19 @@
 #     Loading support for Red Hat kernel ABI
 #     Available Packages
 #
+# Or sometimes:
+#
+#     Loaded plugins: aliases, changelog, downloadonly, kabi, keys, product-id,
+#                   : refresh-packagekit, security, subscription-manager, tmprepo,
+#                   : verify, versionlock
+#     Loading support for Red Hat kernel ABI
+#     Installed Packages
+#
 # NOTE: The Loaded plugins multi-line will differ dependongs on yum
 #	plugin information.
 #
 # We will assume that we will toss lines until after we see the
-# "Available Packages" header.
+# "Available Packages" or "Installed Packages" header.
 
 # initialize buffer and field count, assume stupid header mode
 #
@@ -103,9 +111,10 @@ BEGIN {
 	}
     }
 
-    # We hope that 'Available Packages' means the last stupid header
+    # We hope that 'Available Packages' or 'Installed Packages' 
+    # means the last stupid header
     #
-    if ($0 == "Available Packages") {
+    if ($0 == "Available Packages" || $0 == "Installed Packages" ) {
 	# end of stupid headers, useful data follows at next line
 	header_mode = 0;
     }
