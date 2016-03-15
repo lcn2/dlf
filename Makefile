@@ -4,8 +4,8 @@
 # ylf - yum list fix: convert yum list output to useful data for programs
 #
 # @(#) $Revision: 1.1 $
-# @(#) $Id: Makefile,v 1.1 2014/02/05 23:57:38 root Exp $
-# @(#) $Source: /usr/local/src/sbin/inventory/RCS/Makefile,v $
+# @(#) $Id: Makefile,v 1.1 2014/10/17 01:33:21 root Exp root $
+# @(#) $Source: /usr/global/src/sbin/ylf/RCS/Makefile,v $
 #
 # Copyright (c) 2014 by Landon Curt Noll.  All Rights Reserved.
 #
@@ -40,7 +40,7 @@ TOPNAME= sbin
 INSTALL= install
 HOSTNAME_PROG= hostname
 
-DESTDIR= /usr/local/sbin
+DESTDIR= /usr/global/sbin
 
 TARGETS= ylf
 
