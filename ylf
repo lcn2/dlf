@@ -2,9 +2,9 @@
 #
 # ylf - yum list fix: convert yum list output to useful data for programs
 #
-# @(#) $Revision: 1.1 $
-# @(#) $Id: ylf,v 1.1 2014/10/17 01:33:21 root Exp root $
-# @(#) $Source: /usr/local/src/sbin/ylf/RCS/ylf,v $
+# @(#) $Revision: 1.2 $
+# @(#) $Id: ylf,v 1.2 2014/10/17 01:40:34 root Exp $
+# @(#) $Source: /usr/global/src/sbin/ylf/RCS/ylf,v $
 #
 # Copyright (c) 2014 by Landon Curt Noll.  All Rights Reserved.
 #
