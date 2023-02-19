@@ -1,12 +1,8 @@
-#!/bin/awk -f
+#!/usr/bin/env awk -f
 #
 # ylf - yum list fix: convert yum list output to useful data for programs
 #
-# @(#) $Revision: 1.2 $
-# @(#) $Id: ylf,v 1.2 2014/10/17 01:40:34 root Exp $
-# @(#) $Source: /usr/global/src/sbin/ylf/RCS/ylf,v $
-#
-# Copyright (c) 2014 by Landon Curt Noll.  All Rights Reserved.
+# Copyright (c) 2014,2023 by Landon Curt Noll.  All Rights Reserved.
 #
 # Permission to use, copy, modify, and distribute this software and
 # its documentation for any purpose and without fee is hereby granted,
@@ -31,20 +27,20 @@
 # Share and enjoy! :-)
 #
 # The "yum list available" tool, in defiance of good programming
-# practice, attmepts to output in form that looks "pretty" for
+# practice, attempts to output in form that looks "pretty" for
 # humans but is otherwise useless for programs.  Moreover, the
 # amount of output that "yum list available" can produce is often
 # too much for a human to comprehend, making the "pretty" output
 # pretty useless!
 #
-# This tool attemtps to canonicalize standard input into 3 fields:
+# This tool attempts to canonicalize standard input into 3 fields:
 #
 #	rpm_basename	rpm_version	rpm_repository
 #
 # If the tool finds wacky output (not a multiple of 3 fields),
 # it will print a warning in stderr that begins with a '#'.
 #
-# Futhermore, against Un*x best practices, the yum list prints
+# Furthermore, against Un*x best practices, the yum list prints
 # out a so-called "header" that contains non rpm information.
 # Here is a typical so-called "header":
 #
@@ -62,7 +58,7 @@
 #     Loading support for Red Hat kernel ABI
 #     Installed Packages
 #
-# NOTE: The Loaded plugins multi-line will differ dependongs on yum
+# NOTE: The Loaded plugins multi-line will differ depending on yum
 #	plugin information.
 #
 # We will assume that we will toss lines until after we see the
@@ -96,7 +92,7 @@ BEGIN {
 
 	# dump when we have 3 or more fields
 	if (fld_cnt >= 3) {
-	    
+
 	    # warn when we have an excess of 3 fields
 	    if (fld_cnt > 3) {
 		print "# Warning:field_count:", NF > "/dev/stderr";
@@ -111,7 +107,7 @@ BEGIN {
 	}
     }
 
-    # We hope that 'Available Packages' or 'Installed Packages' 
+    # We hope that 'Available Packages' or 'Installed Packages'
     # means the last stupid header
     #
     if ($0 == "Available Packages" || $0 == "Installed Packages" ) {
@@ -127,13 +123,13 @@ BEGIN {
 #    print "#DEBUG: line:", $0 > "/dev/stderr";
 }
 
-# at EOF (or end of processing due to error), dump any remainng buffer
+# at EOF (or end of processing due to error), dump any remaining buffer
 #
 END {
 
     # dump if we have any left over fields and not printing headers
     if (fld_cnt = 0 && header_mode == 0) {
-	
+
 	# warn when we have an excess of 3 fields
 	if (fld_cnt > 3) {
 	    print "# Warning:field_count:", NF > "/dev/stderr";
