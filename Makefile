@@ -1,13 +1,8 @@
-#!/bin/make
-# @(#)Makefile	1.2 04 May 1995 02:06:57
+#!/usr/bin/env make
 #
 # ylf - yum list fix: convert yum list output to useful data for programs
 #
-# @(#) $Revision: 1.2 $
-# @(#) $Id: Makefile,v 1.2 2016/03/15 23:56:08 root Exp $
-# @(#) $Source: /usr/global/src/sbin/ylf/RCS/Makefile,v $
-#
-# Copyright (c) 2014,2021 by Landon Curt Noll.  All Rights Reserved.
+# Copyright (c) 2014,2021,2023 by Landon Curt Noll.  All Rights Reserved.
 #
 # Permission to use, copy, modify, and distribute this software and
 # its documentation for any purpose and without fee is hereby granted,
@@ -32,7 +27,7 @@
 # Share and enjoy! :-)
 
 
-SHELL= /bin/bash
+SHELL= bash
 CP= cp
 RM= rm
 
