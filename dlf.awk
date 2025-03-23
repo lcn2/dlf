@@ -1,8 +1,8 @@
-#!/usr/bin/env awk -f
+#!/usr/bin/env awk
 #
-# ylf - yum list fix: convert yum list output to useful data for programs
+# dlf.awk - dnf list fix: convert dnf list output to useful data for programs
 #
-# Copyright (c) 2014,2023 by Landon Curt Noll.  All Rights Reserved.
+# Copyright (c) 2014,2023,2025 by Landon Curt Noll.  All Rights Reserved.
 #
 # Permission to use, copy, modify, and distribute this software and
 # its documentation for any purpose and without fee is hereby granted,
@@ -22,14 +22,18 @@
 # OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
 #
-# chongo (Landon Curt Noll, http://www.isthe.com/chongo/index.html) /\oo/\
+# chongo (Landon Curt Noll) /\oo/\
 #
-# Share and enjoy! :-)
+# http://www.isthe.com/chongo/index.html
+# https://github.com/lcn2
 #
-# The "yum list available" tool, in defiance of good programming
+# Share and enjoy!  :-)
+
+
+# The "dnf list available" tool, in defiance of good programming
 # practice, attempts to output in form that looks "pretty" for
 # humans but is otherwise useless for programs.  Moreover, the
-# amount of output that "yum list available" can produce is often
+# amount of output that "dnf list available" can produce is often
 # too much for a human to comprehend, making the "pretty" output
 # pretty useless!
 #
@@ -40,7 +44,7 @@
 # If the tool finds wacky output (not a multiple of 3 fields),
 # it will print a warning in stderr that begins with a '#'.
 #
-# Furthermore, against Un*x best practices, the yum list prints
+# Furthermore, against Un*x best practices, the dnf list prints
 # out a so-called "header" that contains non rpm information.
 # Here is a typical so-called "header":
 #
@@ -58,11 +62,11 @@
 #     Loading support for Red Hat kernel ABI
 #     Installed Packages
 #
-# NOTE: The Loaded plugins multi-line will differ depending on yum
+# NOTE: The Loaded plugins multi-line will differ depending on dnf
 #	plugin information.
 #
 # We will assume that we will toss lines until after we see the
-# "Available Packages" or "Installed Packages" header.
+# appropriate dnf list header.
 
 # initialize buffer and field count, assume stupid header mode
 #
@@ -71,6 +75,7 @@ BEGIN {
    fld_cnt = 0;
    header_mode = 1;
 }
+
 
 # print when we have 3 or more fields
 # warn when we have more than 3 fields
@@ -107,10 +112,12 @@ BEGIN {
 	}
     }
 
-    # We hope that 'Available Packages' or 'Installed Packages'
-    # means the last stupid header
+    # We hope that we have found the last header
     #
-    if ($0 == "Available Packages" || $0 == "Installed Packages" ) {
+    if ($0 == "Available Packages" ||
+	$0 == "Installed Packages" ||
+	$0 == "Recently Added Packages" ||
+	$0 == "Autoremove Packages") {
 	# end of stupid headers, useful data follows at next line
 	header_mode = 0;
     }
@@ -122,6 +129,7 @@ BEGIN {
 #    print "#DEBUG: buf:", buf > "/dev/stderr";
 #    print "#DEBUG: line:", $0 > "/dev/stderr";
 }
+
 
 # at EOF (or end of processing due to error), dump any remaining buffer
 #

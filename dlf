@@ -1,0 +1,194 @@
+#!/usr/bin/env bash
+#
+# dlf.sh - dnf list fix: convert dnf list output to useful data for programs
+#
+# Copyright (c) 2025 by Landon Curt Noll.  All Rights Reserved.
+#
+# Permission to use, copy, modify, and distribute this software and
+# its documentation for any purpose and without fee is hereby granted,
+# provided that the above copyright, this permission notice and text
+# this comment, and the disclaimer below appear in all of the following:
+#
+#       supporting documentation
+#       source copies
+#       source works derived from this source
+#       binaries derived from this source or from derived source
+#
+# LANDON CURT NOLL DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE,
+# INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO
+# EVENT SHALL LANDON CURT NOLL BE LIABLE FOR ANY SPECIAL, INDIRECT OR
+# CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF
+# USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+# OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+# PERFORMANCE OF THIS SOFTWARE.
+#
+# chongo (Landon Curt Noll) /\oo/\
+#
+# http://www.isthe.com/chongo/index.html
+# https://github.com/lcn2
+#
+# Share and enjoy!  :-)
+
+
+# setup
+#
+export VERSION="1.0.0 2025-03-22"
+NAME=$(basename "$0")
+export NAME
+#
+export V_FLAG=0
+#
+export DO_NOT_PROCESS=
+AWK_TOOL=$(type -P awk)
+export AWK_TOOL
+if [[ ! -x $AWK_TOOL ]]; then
+    echo "$0: ERROR: awk not found" 1>&2
+    exit 5
+fi
+
+
+# locate dlf.awk file
+#
+export DNF_AWK
+if [[ -r /usr/local/share/dlf/dlf.awk ]]; then
+    DNF_AWK="/usr/local/share/dlf/dlf.awk"
+else
+    DNF_AWK="./dlf.awk"
+fi
+
+
+# usage
+#
+export USAGE="usage: $0 [-h] [-v level] [-V] [-N] [-d dlf.awk]
+
+    -h          print help message and exit
+    -v level    set verbosity level (def level: $V_FLAG)
+    -V          print version string and exit
+
+    -N          do not process anything, just parse arguments (def: process something)
+
+    -d dlf.awk	path to dlf.awk file (def: $DNF_AWK}
+
+NOTE: Some possible use cases:
+
+    dnf list | dlf
+
+    dnf list --available | dlf
+
+    dnf list --updates | dlf
+
+    dnf list --autoremove | dlf
+
+    dnf list --recent | dlf
+
+Exit codes:
+     0         all OK
+     1         some internal tool exited non-zero
+     2         -h and help string printed or -V and version string printed
+     3         command line error
+     4	       dlf.awk file not found or not readable
+     5	       cannot find aek
+ >= 10         internal error
+
+$NAME version: $VERSION"
+
+
+# parse command line
+#
+while getopts :hv:VnNd: flag; do
+  case "$flag" in
+    h) echo "$USAGE"
+	exit 2
+	;;
+    v) V_FLAG="$OPTARG"
+	;;
+    V) echo "$VERSION"
+	exit 2
+	;;
+    N) DO_NOT_PROCESS="-N"
+	;;
+    d) DNF_AWK="$OPTARG"
+	;;
+    \?) echo "$0: ERROR: invalid option: -$OPTARG" 1>&2
+	echo 1>&2
+	echo "$USAGE" 1>&2
+	exit 3
+	;;
+    :) echo "$0: ERROR: option -$OPTARG requires an argument" 1>&2
+	echo 1>&2
+	echo "$USAGE" 1>&2
+	exit 3
+	;;
+    *) echo "$0: ERROR: unexpected value from getopts: $flag" 1>&2
+	echo 1>&2
+	echo "$USAGE" 1>&2
+	exit 3
+	;;
+  esac
+done
+if [[ $V_FLAG -ge 1 ]]; then
+    echo "$0: debug[1]: debug level: $V_FLAG" 1>&2
+fi
+#
+# remove the options
+#
+shift $(( OPTIND - 1 ));
+#
+# verify arg count
+#
+if [[ $# -ne 0 ]]; then
+    echo "$0: ERROR: expected 0 args, found: $#" 1>&2
+    echo "$USAGE" 1>&2
+    exit 3
+fi
+
+
+# verify dnf.awk file is s readable file
+#
+if [[ ! -e $DNF_AWK ]]; then
+    echo "$0: ERROR: dnf.awk does not exits: $DNF_AWK" 1>&2
+    exit 4
+fi
+if [[ ! -f $DNF_AWK ]]; then
+    echo "$0: ERROR: dnf.awk not readable file: $DNF_AWK" 1>&2
+    exit 4
+fi
+if [[ ! -r $DNF_AWK ]]; then
+    echo "$0: ERROR: dnf.awk not a readable file: $DNF_AWK" 1>&2
+    exit 4
+fi
+
+
+
+# print running info if verbose
+#
+# If -v 3 or higher, print exported variables in order that they were exported.
+#
+if [[ $V_FLAG -ge 3 ]]; then
+    echo "$0: debug[3]: VERSION=$VERSION" 1>&2
+    echo "$0: debug[3]: NAME=$NAME" 1>&2
+    echo "$0: debug[3]: V_FLAG=$V_FLAG" 1>&2
+    echo "$0: debug[3]: DO_NOT_PROCESS=$DO_NOT_PROCESS" 1>&2
+    echo "$0: debug[3]: AWK_TOOL=$AWK_TOOL" 1>&2
+    echo "$0: debug[3]: DNF_AWK=$DNF_AWK" 1>&2
+fi
+
+
+# -N stops early before any processing is performed
+#
+if [[ -n $DO_NOT_PROCESS ]]; then
+    if [[ $V_FLAG -ge 3 ]]; then
+	echo "$0: debug[3]: arguments parsed, -N given, exiting 0" 1>&2
+    fi
+    exit 0
+fi
+
+
+# process dnf list output on stdin
+#
+"$AWK_TOOL" -f "$DNF_AWK" -
+
+
+# All Done!!! -- Jessica Noll, Age 2
+#
+exit 0

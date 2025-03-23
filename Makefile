@@ -1,8 +1,8 @@
 #!/usr/bin/env make
 #
-# ylf - yum list fix: convert yum list output to useful data for programs
+# dlf - yum list fix: convert yum list output to useful data for programs
 #
-# Copyright (c) 2014,2021,2023 by Landon Curt Noll.  All Rights Reserved.
+# Copyright (c) 2014,2021,2023,2025 by Landon Curt Noll.  All Rights Reserved.
 #
 # Permission to use, copy, modify, and distribute this software and
 # its documentation for any purpose and without fee is hereby granted,
@@ -22,29 +22,82 @@
 # OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
 #
-# chongo (Landon Curt Noll, http://www.isthe.com/chongo/index.html) /\oo/\
+# chongo (Landon Curt Noll) /\oo/\
 #
-# Share and enjoy! :-)
+# http://www.isthe.com/chongo/index.html
+# https://github.com/lcn2
+#
+# Share and enjoy!  :-)
 
 
-SHELL= bash
+#############
+# utilities #
+#############
+
+CC= cc
+CHMOD= chmod
 CP= cp
-RM= rm
-
+ID= id
 INSTALL= install
-HOSTNAME_PROG= hostname
+RM= rm
+SHELL= bash
 
-DESTDIR= /usr/local/sbin
 
-TARGETS= ylf
+######################
+# target information #
+######################
+
+# V=@:  do not echo debug statements (quiet mode)
+# V=@   echo debug statements (debug / verbose mode)
+#
+V=@:
+#V=@
+
+DESTDIR= /usr/local/bin
+SHAREDIR= /usr/local/share/dlf
+
+TARGETS= dlf dlf.awk
+
+
+######################################
+# all - default rule - must be first #
+######################################
 
 all: ${TARGETS}
+	${V} echo DEBUG =-= $@ start =-=
+	${V} echo DEBUG =-= $@ end =-=
+
+
+
+#################################################
+# .PHONY list of rules that do not create files #
+#################################################
+
+.PHONY: all configure clean clobber install
+
+
+###################################
+# standard Makefile utility rules #
+###################################
 
 configure:
+	${V} echo DEBUG =-= $@ start =-=
+	${V} echo DEBUG =-= $@ end =-=
 
-clean quick_clean quick_distclean distclean:
+clean:
+	${V} echo DEBUG =-= $@ start =-=
+	${V} echo DEBUG =-= $@ end =-=
 
-clobber quick_clobber:
+clobber: clean
+	${V} echo DEBUG =-= $@ start =-=
+	${V} echo DEBUG =-= $@ end =-=
 
 install: all
-	${INSTALL} -m 0555 ylf ${DESTDIR}
+	${V} echo DEBUG =-= $@ start =-=
+	@if [[ $$(${ID} -u) != 0 ]]; then echo "ERROR: must be root to make $@" 1>&2; exit 2; fi
+	${INSTALL} -d -m 0755 ${DESTDIR}
+	${INSTALL} -m 0555 dlf ${DESTDIR}
+	${INSTALL} -d -m 0755 ${DESTDIR}
+	${INSTALL} -m 0555 dlf.awk ${SHAREDIR}
+	${V} echo DEBUG =-= $@ end =-=
+	${V} echo DEBUG =-= $@ end =-=
