@@ -53,8 +53,9 @@ SHELL= bash
 V=@:
 #V=@
 
-DESTDIR= /usr/local/bin
-SHAREDIR= /usr/local/share/dlf
+PREFIX= /usr/local
+DESTDIR= ${PREFIX}/bin
+SHAREDIR= ${PREFIX}/share/dlf
 
 TARGETS= dlf dlf.awk
 
@@ -97,7 +98,7 @@ install: all
 	@if [[ $$(${ID} -u) != 0 ]]; then echo "ERROR: must be root to make $@" 1>&2; exit 2; fi
 	${INSTALL} -d -m 0755 ${DESTDIR}
 	${INSTALL} -m 0555 dlf ${DESTDIR}
-	${INSTALL} -d -m 0755 ${DESTDIR}
+	${INSTALL} -d -m 0755 ${SHAREDIR}
 	${INSTALL} -m 0555 dlf.awk ${SHAREDIR}
 	${V} echo DEBUG =-= $@ end =-=
 	${V} echo DEBUG =-= $@ end =-=
