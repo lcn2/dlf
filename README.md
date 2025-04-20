@@ -12,7 +12,7 @@ sudo make install
 
 # To use
 
-```sh
+```
 /usr/local/sbin/dlf [-h] [-v level] [-V] [-N] [-d dlf.awk]
 
     -h          print help message and exit
