@@ -2,7 +2,7 @@
 #
 # dlf - yum list fix: convert yum list output to useful data for programs
 #
-# Copyright (c) 2014,2021,2023,2025 by Landon Curt Noll.  All Rights Reserved.
+# Copyright (c) 2014,2021,2023,2025,2026 by Landon Curt Noll.  All Rights Reserved.
 #
 # Permission to use, copy, modify, and distribute this software and
 # its documentation for any purpose and without fee is hereby granted,
@@ -54,7 +54,7 @@ V=@:
 #V=@
 
 PREFIX= /usr/local
-DESTDIR= ${PREFIX}/bin
+DESTDIR= ${PREFIX}/sbin
 SHAREDIR= ${PREFIX}/share/dlf
 
 TARGETS= dlf dlf.awk
